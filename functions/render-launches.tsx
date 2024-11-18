@@ -1,4 +1,10 @@
-import Link from "expo-router/link";
+import React from "react";
+import { View, Text, Image, ScrollView, StyleSheet } from "react-native";
+import Link from "@/components/ui/link";
+import CountdownTimer from "@/components/countdown-timer";
+import { Ionicons } from "@expo/vector-icons";
+
+import TouchableBounce from "@/components/ui/TouchableBounce";
 
 function formatDateString(dateString: string) {
   const date = new Date(dateString);
@@ -31,17 +37,23 @@ function getRelativeTime(date: Date) {
   return `T-${minutes}m`;
 }
 
-function getStatusColor(status: string) {
-  const statusColors = {
-    Go: "bg-green-100 text-green-800 border-green-200",
-    TBD: "bg-yellow-100 text-yellow-800 border-yellow-200",
-    Hold: "bg-red-100 text-red-800 border-red-200",
-    Success: "bg-blue-100 text-blue-800 border-blue-200",
-    Failure: "bg-red-100 text-red-800 border-red-200",
-    "In Flight": "bg-purple-100 text-purple-800 border-purple-200",
-    "Launch Successful": "bg-blue-100 text-blue-800 border-blue-200",
+function getStatusStyle(status: string) {
+  const statusStyles = {
+    Go: { bg: "#dcfce7", text: "#166534", border: "#86efac" },
+    TBD: { bg: "#fef9c3", text: "#854d0e", border: "#fde047" },
+    Hold: { bg: "#fee2e2", text: "#991b1b", border: "#fca5a5" },
+    Success: { bg: "#dbeafe", text: "#1e40af", border: "#93c5fd" },
+    Failure: { bg: "#fee2e2", text: "#991b1b", border: "#fca5a5" },
+    "In Flight": { bg: "#f3e8ff", text: "#6b21a8", border: "#d8b4fe" },
+    "Launch Successful": { bg: "#dbeafe", text: "#1e40af", border: "#93c5fd" },
   };
-  return statusColors[status] || "bg-gray-100 text-gray-800 border-gray-200";
+  return (
+    statusStyles[status] || {
+      bg: "#f3f4f6",
+      text: "#1f2937",
+      border: "#e5e7eb",
+    }
+  );
 }
 
 export async function renderUpcomingLaunches() {
@@ -49,197 +61,325 @@ export async function renderUpcomingLaunches() {
     "https://lldev.thespacedevs.com/2.2.0/launch/upcoming?limit=10&ordering=net";
 
   try {
-    const response = await fetch(API_URL, {});
+    const response = await fetch(API_URL);
 
     if (!response.ok) {
       throw new Error("Failed to fetch launch data");
     }
 
-    const data = (await response.json()) as ApiResponse;
+    const data = await response.json();
 
     if (!data.results || data.results.length === 0) {
       throw new Error("No upcoming launches found");
     }
 
-    return (
-      <div className="max-w-4xl mx-auto py-8 px-4">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">
-          Upcoming Launches
-        </h1>
+    // Sort and filter launches
+    data.results = data.results
+      .sort((a, b) => new Date(a.net).getTime() - new Date(b.net).getTime())
+      .filter((launch) => new Date(launch.net) > new Date());
 
-        <div className="space-y-6">
+    return (
+      <>
+        <View style={styles.launchList}>
           {data.results.map((launch) => {
             const date = formatDateString(launch.net);
+            const statusStyle = getStatusStyle(launch.status.name);
 
             return (
-              <Link
-                href={`/launch/${launch.id}`}
-                key={launch.id}
-                className="block group"
-              >
-                <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden border border-gray-100">
-                  <div className="sm:flex">
+              <Link href={`/launch/${launch.id}`} key={launch.id} asChild>
+                <TouchableBounce style={styles.launchCard}>
+                  <View style={styles.cardContent}>
                     {/* Image Section */}
-                    <div className="sm:w-48 h-48 sm:h-auto relative">
+                    <View style={styles.imageContainer}>
                       {launch.image ? (
-                        <img
-                          src={launch.image}
-                          alt={launch.name}
-                          className="w-full h-full object-cover"
+                        <Image
+                          source={{ uri: launch.image }}
+                          style={styles.image}
+                          resizeMode="cover"
                         />
                       ) : (
-                        <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                          <svg
-                            className="h-12 w-12 text-gray-400"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={1}
-                              d="M13 10V3L4 14h7v7l9-11h-7z"
-                            />
-                          </svg>
-                        </div>
+                        <View style={styles.placeholderImage}>
+                          <Ionicons
+                            name="rocket-outline"
+                            size={32}
+                            color="#9ca3af"
+                          />
+                        </View>
                       )}
-                      <div className="absolute top-2 left-2">
-                        <span
-                          className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(
-                            launch.status.name
-                          )}`}
+                      <View style={styles.statusBadgeContainer}>
+                        <View
+                          style={[
+                            styles.statusBadge,
+                            {
+                              backgroundColor: statusStyle.bg,
+                              borderColor: statusStyle.border,
+                            },
+                          ]}
                         >
-                          {launch.status.name}
-                        </span>
-                      </div>
-                    </div>
+                          <Text
+                            style={[
+                              styles.statusText,
+                              { color: statusStyle.text },
+                            ]}
+                          >
+                            {launch.status.name}
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
 
                     {/* Content Section */}
-                    <div className="p-6 flex-1">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h2 className="text-xl font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
-                            {launch.name}
-                          </h2>
-                          <p className="text-sm text-gray-500 mt-1">
+                    <View style={styles.detailsContainer}>
+                      <View style={styles.headerContainer}>
+                        <View style={styles.titleContainer}>
+                          <Text style={styles.launchName}>{launch.name}</Text>
+                          <Text style={styles.providerName}>
                             {launch.launch_service_provider.name}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-2xl font-bold text-blue-600">
+                          </Text>
+                        </View>
+                        <View style={styles.timeContainer}>
+                          <Text style={styles.relativeTime}>
                             {date.relative}
-                          </p>
-                          <p className="text-sm text-gray-500 mt-1">
-                            {date.time}
-                          </p>
-                        </div>
-                      </div>
+                          </Text>
+                          <Text style={styles.absoluteTime}>{date.time}</Text>
+                        </View>
+                      </View>
 
-                      <div className="mt-4">
-                        <p className="text-gray-600 line-clamp-2">
-                          {launch.mission?.description ||
-                            "Mission details pending."}
-                        </p>
-                      </div>
+                      <CountdownTimer targetDate={new Date(launch.net)} />
 
-                      <div className="mt-6 flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
-                          <div className="flex items-center text-sm text-gray-500">
-                            <svg
-                              className="h-4 w-4 mr-1"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                              />
-                            </svg>
-                            {launch.pad.name}
-                          </div>
+                      <Text style={styles.description} numberOfLines={2}>
+                        {launch.mission?.description ||
+                          "Mission details pending."}
+                      </Text>
+
+                      <View style={styles.footer}>
+                        <View style={styles.metadataContainer}>
+                          <View style={styles.metadataItem}>
+                            <Ionicons
+                              name="location"
+                              size={16}
+                              color="#6b7280"
+                            />
+                            <Text style={styles.metadataText}>
+                              {launch.pad.name}
+                            </Text>
+                          </View>
                           {launch.mission?.orbit && (
-                            <div className="flex items-center text-sm text-gray-500">
-                              <svg
-                                className="h-4 w-4 mr-1"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064"
-                                />
-                              </svg>
-                              {launch.mission.orbit.name}
-                            </div>
-                          )}
-                        </div>
-                        {launch.webcast_live && (
-                          <div className="flex items-center text-green-600">
-                            <svg
-                              className="h-4 w-4 mr-1"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                            <View style={styles.metadataItem}>
+                              <Ionicons
+                                name="globe"
+                                size={16}
+                                color="#6b7280"
                               />
-                            </svg>
-                            <span className="text-sm">Live</span>
-                          </div>
+                              <Text style={styles.metadataText}>
+                                {launch.mission.orbit.name}
+                              </Text>
+                            </View>
+                          )}
+                        </View>
+                        {launch.webcast_live && (
+                          <View style={styles.liveIndicator}>
+                            <Ionicons
+                              name="videocam"
+                              size={16}
+                              color="#059669"
+                            />
+                            <Text style={styles.liveText}>Live</Text>
+                          </View>
                         )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                      </View>
+                    </View>
+                  </View>
+                </TouchableBounce>
               </Link>
             );
           })}
-        </div>
+        </View>
 
-        {/* Pagination Section Placeholder */}
-        <div className="mt-8 flex justify-center">
-          <p className="text-sm text-gray-500">
+        <View style={styles.paginationContainer}>
+          <Text style={styles.paginationText}>
             Showing {data.results.length} of {data.count} launches
-          </p>
-        </div>
-      </div>
+          </Text>
+        </View>
+      </>
     );
   } catch (error) {
     return (
-      <div className="max-w-4xl mx-auto p-6">
-        <div className="bg-red-50 rounded-xl p-6 text-center">
-          <svg
-            className="h-12 w-12 mx-auto text-red-500 mb-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-            />
-          </svg>
-          <h2 className="text-lg font-semibold text-red-800 mb-2">
-            Error Loading Launches
-          </h2>
-          <p className="text-red-600">
+      <View style={styles.errorContainer}>
+        <View style={styles.errorContent}>
+          <Ionicons
+            name="warning"
+            size={48}
+            color="#dc2626"
+            style={styles.errorIcon}
+          />
+          <Text style={styles.errorTitle}>Error Loading Launches</Text>
+          <Text style={styles.errorMessage}>
             {error instanceof Error ? error.message : "An error occurred"}
-          </p>
-        </div>
-      </div>
+          </Text>
+        </View>
+      </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#f9fafb",
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#111827",
+    padding: 16,
+    paddingTop: 24,
+  },
+  launchList: {
+    padding: 16,
+    gap: 16,
+  },
+  launchCard: {
+    backgroundColor: "white",
+    borderRadius: 12,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "#f3f4f6",
+    marginBottom: 16,
+  },
+  cardContent: {
+    flexDirection: "column",
+  },
+  imageContainer: {
+    height: 200,
+    position: "relative",
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+  },
+  placeholderImage: {
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#f3f4f6",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  statusBadgeContainer: {
+    position: "absolute",
+    top: 8,
+    left: 8,
+  },
+  statusBadge: {
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 9999,
+    borderWidth: 1,
+  },
+  statusText: {
+    fontSize: 12,
+    fontWeight: "500",
+  },
+  detailsContainer: {
+    padding: 16,
+  },
+  headerContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    marginBottom: 12,
+  },
+  titleContainer: {
+    flex: 1,
+    marginRight: 16,
+  },
+  launchName: {
+    fontSize: 20,
+    fontWeight: "600",
+    color: "#111827",
+    marginBottom: 4,
+  },
+  providerName: {
+    fontSize: 14,
+    color: "#6b7280",
+  },
+  timeContainer: {
+    alignItems: "flex-end",
+  },
+  relativeTime: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#2563eb",
+  },
+  absoluteTime: {
+    fontSize: 14,
+    color: "#6b7280",
+    marginTop: 4,
+  },
+  description: {
+    fontSize: 16,
+    color: "#4b5563",
+    marginTop: 12,
+    marginBottom: 16,
+  },
+  footer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 8,
+  },
+  metadataContainer: {
+    flexDirection: "row",
+    gap: 16,
+  },
+  metadataItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  metadataText: {
+    fontSize: 14,
+    color: "#6b7280",
+  },
+  liveIndicator: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  liveText: {
+    fontSize: 14,
+    color: "#059669",
+  },
+  paginationContainer: {
+    padding: 16,
+    alignItems: "center",
+  },
+  paginationText: {
+    fontSize: 14,
+    color: "#6b7280",
+  },
+  errorContainer: {
+    flex: 1,
+    padding: 16,
+    justifyContent: "center",
+  },
+  errorContent: {
+    backgroundColor: "#fee2e2",
+    padding: 24,
+    borderRadius: 12,
+    alignItems: "center",
+  },
+  errorIcon: {
+    marginBottom: 16,
+  },
+  errorTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#991b1b",
+    marginBottom: 8,
+  },
+  errorMessage: {
+    fontSize: 16,
+    color: "#dc2626",
+  },
+});

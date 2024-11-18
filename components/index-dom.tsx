@@ -1,8 +1,7 @@
-"use dom";
 /// <reference types="react/canary" />
 import { ScrollView, View } from "react-native";
 
-import React from "react";
+import React, { startTransition, useEffect } from "react";
 import { BodyScrollView } from "@/components/ui/BodyScrollView";
 import * as AC from "@bacons/apple-colors";
 import { renderUpcomingLaunches } from "@/functions/render-launches";
@@ -12,10 +11,30 @@ const POSTER_HEIGHT = 210;
 
 import "@/global.css";
 
+import { useCallback, useState } from "react";
+import { RefreshControl } from "react-native";
+
 export default function HomeScreen(_: { dom?: import("expo/dom").DOMProps }) {
+  const [refreshing, setRefreshing] = useState(false);
+  const [renderKey, setRenderKey] = useState("123");
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    // Re-invoke the renderUpcomingLaunches function
+    setRenderKey(Math.random().toString());
+    setRefreshing(false);
+  }, []);
+
+  useEffect(() => {
+    // onRefresh();
+  }, []);
+
   return (
-    <BodyScrollView>
-      <React.Suspense fallback={<Loading />}>
+    <BodyScrollView
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
+      <React.Suspense key={renderKey} fallback={<Loading />}>
         {renderUpcomingLaunches()}
       </React.Suspense>
     </BodyScrollView>
