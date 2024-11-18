@@ -1,3 +1,4 @@
+"use client";
 import { Link as ExpoLink } from "expo-router";
 import {
   openBrowserAsync,

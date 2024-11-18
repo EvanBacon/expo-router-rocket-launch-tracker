@@ -1,3 +1,5 @@
+"use server";
+
 import {
   View,
   Text,
@@ -307,7 +309,7 @@ export async function renderLaunchDetail({ id }: { id: string }) {
 
 // ... (previous code remains the same until styles)
 
-const styles = StyleSheet.create({
+const styles = {
   container: {
     flex: 1,
     backgroundColor: AColors.systemGroupedBackground,
@@ -613,4 +615,4 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     marginRight: 8,
   },
-});
+} as const;

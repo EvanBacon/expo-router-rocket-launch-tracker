@@ -1,3 +1,5 @@
+"use server";
+
 import React from "react";
 import { View, Text, Image, ScrollView, StyleSheet } from "react-native";
 import Link from "@/components/ui/link";
@@ -223,7 +225,7 @@ export async function renderUpcomingLaunches() {
   }
 }
 
-const styles = StyleSheet.create({
+const styles = {
   container: {
     flex: 1,
     backgroundColor: "#f9fafb",
@@ -382,4 +384,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#dc2626",
   },
-});
+};
