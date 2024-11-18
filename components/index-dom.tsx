@@ -24,10 +24,6 @@ export default function HomeScreen(_: { dom?: import("expo/dom").DOMProps }) {
     setRefreshing(false);
   }, []);
 
-  useEffect(() => {
-    // onRefresh();
-  }, []);
-
   return (
     <BodyScrollView
       refreshControl={
