@@ -9,7 +9,7 @@ export default function TabLayout() {
   return (
     <Stack
       screenOptions={{
-        ...(process.env.EXPO_OS === "web"
+        ...(process.env.EXPO_OS !== "ios"
           ? {}
           : {
               headerLargeTitle: true,

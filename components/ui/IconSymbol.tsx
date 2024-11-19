@@ -14,6 +14,7 @@ const MAPPING = {
   "chevron.left.forwardslash.chevron.right": "code",
   "chevron.right": "chevron-right",
   magnifyingglass: "search",
+  "flag.2.crossed.fill": "flag",
 } as Partial<
   Record<
     import("expo-symbols").SymbolViewProps["name"],
