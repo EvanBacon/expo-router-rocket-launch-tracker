@@ -1,13 +1,6 @@
 "use server";
 
-import {
-  View,
-  Text,
-  Image,
-  ScrollView,
-  Pressable,
-  StyleSheet,
-} from "react-native";
+import { View, Text, Image, ScrollView, Pressable } from "react-native";
 
 import * as AColors from "@bacons/apple-colors";
 

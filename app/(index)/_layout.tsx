@@ -22,7 +22,7 @@ export default function TabLayout() {
                 backgroundColor: "transparent",
               },
             }),
-        title: "Search",
+        title: "Missions",
       }}
     />
   );
