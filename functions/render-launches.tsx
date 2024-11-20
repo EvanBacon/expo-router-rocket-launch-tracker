@@ -1,7 +1,9 @@
 "use server";
 
 import React from "react";
-import { View, Text, Image, ScrollView, StyleSheet } from "react-native";
+import { View, Text, ScrollView, StyleSheet } from "react-native";
+
+import { Image } from "expo-image";
 import Link from "@/components/ui/link";
 import CountdownTimer from "@/components/countdown-timer";
 import { Ionicons } from "@expo/vector-icons";
@@ -97,6 +99,7 @@ export async function renderUpcomingLaunches() {
                         <Image
                           source={{ uri: launch.image }}
                           style={styles.image}
+                          transition={200}
                           resizeMode="cover"
                         />
                       ) : (
@@ -378,4 +381,4 @@ const styles = {
     fontSize: 16,
     color: AC.systemRed,
   },
-};
+} as const;

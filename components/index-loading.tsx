@@ -141,8 +141,6 @@ const styles = {
     backgroundColor: AC.secondarySystemGroupedBackground,
     borderRadius: 12,
     overflow: "hidden",
-    borderWidth: 1,
-    borderColor: AC.secondarySystemGroupedBackground,
     marginBottom: 16,
   },
   cardContent: {

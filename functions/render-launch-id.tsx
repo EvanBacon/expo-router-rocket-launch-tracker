@@ -1,7 +1,7 @@
 "use server";
 
-import { View, Text, Image, ScrollView, Pressable } from "react-native";
-
+import { View, Text, ScrollView, Pressable } from "react-native";
+import { Image } from "expo-image";
 import * as AColors from "@bacons/apple-colors";
 
 import Link from "@/components/ui/link";
@@ -54,7 +54,6 @@ export async function renderLaunchDetail({ id }: { id: string }) {
     if (!response.ok) throw new Error("Failed to fetch launch data");
     const launch = await response.json();
     const launchDate = new Date(launch.net);
-    const countdown = formatCountdown(launchDate);
     const statusColors = getStatusColor(launch.status.name);
 
     return (
@@ -69,6 +68,7 @@ export async function renderLaunchDetail({ id }: { id: string }) {
         {/* Hero Section */}
         <View style={styles.heroContainer}>
           <Image
+            transition={200}
             source={
               launch.image
                 ? { uri: launch.image }

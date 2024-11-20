@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, ScrollView, StyleSheet } from "react-native";
+import { View, ScrollView, StyleSheet } from "react-native";
 import * as AColors from "@bacons/apple-colors";
 import CountdownTimer from "./countdown-timer";
 
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     padding: 16,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: AColors.systemGray3,
   },
   statusContainer: {
     flexDirection: "row",

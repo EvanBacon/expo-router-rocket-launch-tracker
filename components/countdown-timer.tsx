@@ -16,7 +16,7 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({ targetDate }) => {
   });
 
   useEffect(() => {
-    const timer = setInterval(() => {
+    const update = () => {
       const now = new Date().getTime();
       const distance = targetDate.getTime() - now;
 
@@ -31,8 +31,11 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({ targetDate }) => {
       const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
       setTimeLeft({ hours, minutes, seconds });
-    }, 1000);
+    };
 
+    const timer = setInterval(update, 1000);
+
+    update();
     return () => clearInterval(timer);
   }, [targetDate]);
 
@@ -93,7 +96,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   numberContainer: {
-    backgroundColor: AColors.secondarySystemGroupedBackground,
+    backgroundColor: AColors.systemGray6,
     borderRadius: 8,
     padding: 16,
     minWidth: 80,
@@ -104,6 +107,8 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: "700",
     color: AColors.label,
+    // Use monospace font
+    fontVariant: ["tabular-nums"],
   },
   label: {
     fontSize: 16,
