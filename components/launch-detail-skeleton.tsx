@@ -1,6 +1,8 @@
 import { View, StyleSheet, Animated, Easing } from "react-native";
 import { useEffect, useRef } from "react";
 
+import * as AC from "@bacons/apple-colors";
+
 function LaunchDetailSkeleton() {
   // Create animation value for pulse effect
   const pulseAnim = useRef(new Animated.Value(0)).current;
@@ -144,11 +146,11 @@ function LaunchDetailSkeleton() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: AC.secondarySystemBackground,
     padding: 16,
   },
   card: {
-    backgroundColor: "#fff",
+    backgroundColor: AC.secondarySystemGroupedBackground,
     borderRadius: 12,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -158,7 +160,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   skeletonBase: {
-    backgroundColor: "#e5e7eb",
+    backgroundColor: AC.systemGray3,
     borderRadius: 4,
   },
   heroContainer: {
@@ -167,7 +169,7 @@ const styles = StyleSheet.create({
   },
   heroBackground: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "#e5e7eb",
+    backgroundColor: AC.systemGray3,
   },
   heroContent: {
     position: "absolute",
@@ -184,10 +186,8 @@ const styles = StyleSheet.create({
   },
   countdownContainer: {
     padding: 24,
-    backgroundColor: "#f9fafb",
+
     alignItems: "center",
-    borderBottomWidth: 1,
-    borderBottomColor: "#f3f4f6",
   },
   content: {
     padding: 24,
@@ -221,14 +221,14 @@ const styles = StyleSheet.create({
   statCard: {
     flex: 1,
     minWidth: "48%",
-    backgroundColor: "#f9fafb",
+    backgroundColor: AC.systemGray5,
     padding: 16,
     borderRadius: 8,
     alignItems: "center",
   },
   linksSection: {
     borderTopWidth: 1,
-    borderTopColor: "#f3f4f6",
+    borderTopColor: AC.systemGray5,
     paddingTop: 24,
     gap: 16,
   },

@@ -1,6 +1,6 @@
 import { BodyScrollView } from "@/components/ui/BodyScrollView";
 import { label } from "@bacons/apple-colors";
-import { StyleSheet, Text } from "react-native";
+import { Text } from "react-native";
 
 export default function TabTwoScreen() {
   return (
@@ -9,16 +9,3 @@ export default function TabTwoScreen() {
     </BodyScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  headerImage: {
-    color: "#808080",
-    bottom: -90,
-    left: -35,
-    position: "absolute",
-  },
-  titleContainer: {
-    flexDirection: "row",
-    gap: 8,
-  },
-});

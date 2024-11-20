@@ -5,7 +5,7 @@ import { View, Text, Image, ScrollView, StyleSheet } from "react-native";
 import Link from "@/components/ui/link";
 import CountdownTimer from "@/components/countdown-timer";
 import { Ionicons } from "@expo/vector-icons";
-
+import * as AC from "@bacons/apple-colors";
 import TouchableBounce from "@/components/ui/TouchableBounce";
 
 function formatDateString(dateString: string) {
@@ -51,9 +51,9 @@ function getStatusStyle(status: string) {
   };
   return (
     statusStyles[status] || {
-      bg: "#f3f4f6",
-      text: "#1f2937",
-      border: "#e5e7eb",
+      bg: AC.secondarySystemGroupedBackground,
+      text: AC.label,
+      border: AC.systemGray5,
     }
   );
 }
@@ -104,7 +104,7 @@ export async function renderUpcomingLaunches() {
                           <Ionicons
                             name="rocket-outline"
                             size={32}
-                            color="#9ca3af"
+                            color={AC.systemGray5}
                           />
                         </View>
                       )}
@@ -160,7 +160,7 @@ export async function renderUpcomingLaunches() {
                             <Ionicons
                               name="location"
                               size={16}
-                              color="#6b7280"
+                              color={AC.secondaryLabel}
                             />
                             <Text style={styles.metadataText}>
                               {launch.pad.name}
@@ -171,7 +171,7 @@ export async function renderUpcomingLaunches() {
                               <Ionicons
                                 name="globe"
                                 size={16}
-                                color="#6b7280"
+                                color={AC.secondaryLabel}
                               />
                               <Text style={styles.metadataText}>
                                 {launch.mission.orbit.name}
@@ -226,14 +226,10 @@ export async function renderUpcomingLaunches() {
 }
 
 const styles = {
-  container: {
-    flex: 1,
-    backgroundColor: "#f9fafb",
-  },
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#111827",
+    color: AC.label,
     padding: 16,
     paddingTop: 24,
   },
@@ -242,11 +238,9 @@ const styles = {
     gap: 16,
   },
   launchCard: {
-    backgroundColor: "white",
+    backgroundColor: AC.secondarySystemGroupedBackground,
     borderRadius: 12,
     overflow: "hidden",
-    borderWidth: 1,
-    borderColor: "#f3f4f6",
     marginBottom: 16,
   },
   cardContent: {
@@ -263,7 +257,7 @@ const styles = {
   placeholderImage: {
     width: "100%",
     height: "100%",
-    backgroundColor: "#f3f4f6",
+    backgroundColor: AC.secondarySystemBackground,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -298,12 +292,12 @@ const styles = {
   launchName: {
     fontSize: 20,
     fontWeight: "600",
-    color: "#111827",
+    color: AC.label,
     marginBottom: 4,
   },
   providerName: {
     fontSize: 14,
-    color: "#6b7280",
+    color: AC.secondaryLabel,
   },
   timeContainer: {
     alignItems: "flex-end",
@@ -311,16 +305,16 @@ const styles = {
   relativeTime: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#2563eb",
+    color: AC.systemBlue,
   },
   absoluteTime: {
     fontSize: 14,
-    color: "#6b7280",
+    color: AC.tertiaryLabel,
     marginTop: 4,
   },
   description: {
     fontSize: 16,
-    color: "#4b5563",
+    color: AC.tertiaryLabel,
     marginTop: 12,
     marginBottom: 16,
   },
@@ -341,7 +335,7 @@ const styles = {
   },
   metadataText: {
     fontSize: 14,
-    color: "#6b7280",
+    color: AC.tertiaryLabel,
   },
   liveIndicator: {
     flexDirection: "row",
@@ -350,7 +344,7 @@ const styles = {
   },
   liveText: {
     fontSize: 14,
-    color: "#059669",
+    color: AC.systemMint,
   },
   paginationContainer: {
     padding: 16,
@@ -358,7 +352,7 @@ const styles = {
   },
   paginationText: {
     fontSize: 14,
-    color: "#6b7280",
+    color: AC.tertiaryLabel,
   },
   errorContainer: {
     flex: 1,
@@ -382,6 +376,6 @@ const styles = {
   },
   errorMessage: {
     fontSize: 16,
-    color: "#dc2626",
+    color: AC.systemRed,
   },
 };
